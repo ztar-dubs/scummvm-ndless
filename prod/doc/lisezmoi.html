@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ScummVM pour TI-Nspire CX CAS - Documentation</title>
+<style>
+body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #e0e0e0; }
+h1 { color: #f0c040; border-bottom: 2px solid #f0c040; padding-bottom: 10px; }
+h2 { color: #60b0ff; margin-top: 30px; }
+h3 { color: #80d080; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+th, td { border: 1px solid #444; padding: 8px 12px; text-align: left; }
+th { background: #2a2a4e; color: #f0c040; }
+tr:nth-child(even) { background: #22223a; }
+code { background: #2a2a4e; padding: 2px 6px; border-radius: 3px; color: #80d080; }
+pre { background: #2a2a4e; padding: 15px; border-radius: 5px; overflow-x: auto; }
+.note { background: #2a3a2a; border-left: 4px solid #80d080; padding: 10px 15px; margin: 10px 0; }
+.warning { background: #3a2a2a; border-left: 4px solid #ff6060; padding: 10px 15px; margin: 10px 0; }
+a { color: #60b0ff; }
+</style>
+</head>
+<body>
+
+<h1>ScummVM pour TI-Nspire CX CAS</h1>
+<p>Un portage de <a href="https://www.scummvm.org/">ScummVM</a> sur la calculatrice TI-Nspire CX CAS via le SDK <a href="https://ndless.me/">Ndless</a>.</p>
+
+<h2>1. Installation</h2>
+
+<h3>1.1 Pr&eacute;requis</h3>
+<ul>
+<li>Calculatrice TI-Nspire CX CAS avec <strong>Ndless</strong> install&eacute;</li>
+<li>Les fichiers de donn&eacute;es des jeux (vous devez poss&eacute;der les jeux originaux)</li>
+</ul>
+
+<h3>1.2 Arborescence des fichiers</h3>
+<p>Copiez l'arborescence suivante sur votre calculatrice (par ex. sous <code>/documents/scummvm/</code>) :</p>
+<pre>
+scummvm/
+  scummvm.tns          &lt;-- L'ex&eacute;cutable
+  data/
+    encoding.dat.tns
+    fonts.dat.tns
+    gui-icons.dat.tns
+    kyra.dat.tns        &lt;-- Requis pour les jeux Kyra/EOB/LOL
+    lure.dat.tns        &lt;-- Requis pour Lure of the Temptress
+    scummclassic.zip.tns
+    scummmodern.zip.tns
+    scummremastered.zip.tns
+    vkeybd_default.zip.tns
+    vkeybd_small.zip.tns
+  roms/
+    monjeu/             &lt;-- Un dossier par jeu
+      FICHIER1.tns
+      FICHIER2.tns
+      ...
+  saves/                &lt;-- Cr&eacute;&eacute; automatiquement
+</pre>
+
+<div class="warning">
+<strong>Important :</strong> Tous les fichiers sur la Nspire doivent avoir l'extension <code>.tns</code>. Renommez vos fichiers de jeu en ajoutant <code>.tns</code> &agrave; la fin (ex : <code>RESOURCE.MAP</code> devient <code>RESOURCE.MAP.tns</code>).
+</div>
+
+<h3>1.3 D&eacute;tail des fichiers du r&eacute;pertoire data/</h3>
+<table>
+<tr><th>Fichier</th><th>Taille</th><th>Requis</th><th>Description</th></tr>
+<tr><td><code>encoding.dat.tns</code></td><td>176 Ko</td><td><strong>Requis</strong></td><td>Tables d'encodage de caract&egrave;res. N&eacute;cessaire pour l'affichage correct du texte dans tous les jeux.</td></tr>
+<tr><td><code>fonts.dat.tns</code></td><td>6,1 Mo</td><td>Optionnel</td><td>Pack de polices suppl&eacute;mentaires pour l'interface ScummVM. Peut &ecirc;tre supprim&eacute; pour gagner de l'espace &mdash; la police int&eacute;gr&eacute;e sera utilis&eacute;e &agrave; la place.</td></tr>
+<tr><td><code>gui-icons.dat.tns</code></td><td>3,1 Mo</td><td>Optionnel</td><td>Ic&ocirc;nes des jeux affich&eacute;es dans le lanceur ScummVM. Peut &ecirc;tre supprim&eacute; &mdash; des ic&ocirc;nes g&eacute;n&eacute;riques seront affich&eacute;es &agrave; la place.</td></tr>
+<tr><td><code>kyra.dat.tns</code></td><td>2,0 Mo</td><td>Conditionnel</td><td>Donn&eacute;es statiques du moteur Kyra. <strong>Requis</strong> pour lancer Legend of Kyrandia 1-3, Eye of the Beholder 1-2 et Lands of Lore.</td></tr>
+<tr><td><code>lure.dat.tns</code></td><td>751 Ko</td><td>Conditionnel</td><td>Donn&eacute;es statiques du moteur Lure. <strong>Requis</strong> pour lancer Lure of the Temptress.</td></tr>
+<tr><td><code>scummclassic.zip.tns</code></td><td>16 Ko</td><td>Optionnel</td><td>Th&egrave;me classique (sombre) de l'interface ScummVM. Alternative au th&egrave;me par d&eacute;faut.</td></tr>
+<tr><td><code>scummmodern.zip.tns</code></td><td>63 Ko</td><td>Optionnel</td><td>Th&egrave;me moderne de l'interface ScummVM. Alternative au th&egrave;me par d&eacute;faut.</td></tr>
+<tr><td><code>scummremastered.zip.tns</code></td><td>88 Ko</td><td>Recommand&eacute;</td><td>Th&egrave;me remaster de l'interface ScummVM. C'est le th&egrave;me par d&eacute;faut &mdash; sans ce fichier, un th&egrave;me int&eacute;gr&eacute; de repli est utilis&eacute; (moins esth&eacute;tique mais fonctionnel).</td></tr>
+<tr><td><code>vkeybd_default.zip.tns</code></td><td>181 Ko</td><td>Optionnel</td><td>Clavier virtuel int&eacute;gr&eacute; de ScummVM (taille standard). Non utilis&eacute; par ce portage (la Nspire a son propre VKB), mais sans cons&eacute;quence s'il est pr&eacute;sent.</td></tr>
+<tr><td><code>vkeybd_small.zip.tns</code></td><td>84 Ko</td><td>Optionnel</td><td>Clavier virtuel int&eacute;gr&eacute; de ScummVM (petite taille). Non utilis&eacute; par ce portage.</td></tr>
+</table>
+
+<div class="note">
+<strong>Installation minimale :</strong> Pour &eacute;conomiser de l'espace, vous n'avez besoin que de <code>encoding.dat.tns</code> plus les fichiers sp&eacute;cifiques aux moteurs des jeux que vous voulez lancer (<code>kyra.dat.tns</code> et/ou <code>lure.dat.tns</code>). Tous les autres fichiers sont optionnels. Total minimum : ~176 Ko (sans jeux Kyra/Lure).
+</div>
+
+<h3>1.4 Ajouter un jeu</h3>
+<ol>
+<li>Cr&eacute;ez un dossier pour votre jeu sous <code>roms/</code> (ex : <code>roms/monkey1/</code>)</li>
+<li>Copiez les fichiers de donn&eacute;es du jeu dans ce dossier, en ajoutant <code>.tns</code> &agrave; chaque nom de fichier</li>
+<li>Lancez <code>scummvm.tns</code> sur la calculatrice</li>
+<li>Utilisez &laquo; Add Game... &raquo; et naviguez jusqu'au dossier de votre jeu</li>
+</ol>
+
+<h2>2. Jeux support&eacute;s</h2>
+
+<h3>2.1 Moteurs de jeu</h3>
+<table>
+<tr><th>Moteur</th><th>Jeux</th><th>Fichier suppl&eacute;mentaire</th></tr>
+<tr>
+  <td><strong>SCUMM</strong> (v1-v6)</td>
+  <td>The Secret of Monkey Island, Monkey Island 2, Indiana Jones and the Fate of Atlantis, Day of the Tentacle, Sam &amp; Max, Loom, Maniac Mansion, Zak McKracken</td>
+  <td>Aucun</td>
+</tr>
+<tr>
+  <td><strong>Kyra</strong></td>
+  <td>The Legend of Kyrandia 1, 2, 3</td>
+  <td><code>kyra.dat.tns</code></td>
+</tr>
+<tr>
+  <td><strong>EOB</strong> (sous-moteur de Kyra)</td>
+  <td>Eye of the Beholder 1 &amp; 2</td>
+  <td><code>kyra.dat.tns</code></td>
+</tr>
+<tr>
+  <td><strong>LOL</strong> (sous-moteur de Kyra)</td>
+  <td>Lands of Lore: The Throne of Chaos</td>
+  <td><code>kyra.dat.tns</code></td>
+</tr>
+<tr>
+  <td><strong>AGI</strong></td>
+  <td>King's Quest 1-4, Space Quest 1-2, Leisure Suit Larry 1, Police Quest 1</td>
+  <td>Aucun</td>
+</tr>
+<tr>
+  <td><strong>SCI</strong> (v0-v1)</td>
+  <td>King's Quest 5-6, Space Quest 3-5, Quest for Glory 1-3, Leisure Suit Larry 2-6, Gabriel Knight</td>
+  <td>Aucun</td>
+</tr>
+<tr>
+  <td><strong>GOB</strong></td>
+  <td>Gobliiins 1-3, Bargon Attack, Woodruff</td>
+  <td>Aucun</td>
+</tr>
+<tr>
+  <td><strong>Queen</strong></td>
+  <td>Flight of the Amazon Queen (gratuit)</td>
+  <td>Aucun</td>
+</tr>
+<tr>
+  <td><strong>Sky</strong></td>
+  <td>Beneath a Steel Sky (gratuit)</td>
+  <td>Aucun</td>
+</tr>
+<tr>
+  <td><strong>Lure</strong></td>
+  <td>Lure of the Temptress (gratuit)</td>
+  <td><code>lure.dat.tns</code></td>
+</tr>
+</table>
+
+<div class="note">
+<strong>Jeux gratuits :</strong> Flight of the Amazon Queen, Beneath a Steel Sky et Lure of the Temptress sont disponibles gratuitement sur le <a href="https://www.scummvm.org/games/">site de ScummVM</a>.
+</div>
+
+<div class="note">
+<strong>Note :</strong> Les jeux SCUMM v7-v8 (The Dig, Full Throttle, The Curse of Monkey Island) ne sont <strong>pas support&eacute;s</strong> en raison des limitations mat&eacute;rielles.
+</div>
+
+<h3>2.2 Fichiers de donn&eacute;es des jeux</h3>
+<p>Chaque moteur n&eacute;cessite des fichiers sp&eacute;cifiques du jeu original. Supprimez les ex&eacute;cutables (.EXE, .COM, .BAT) et fichiers de configuration (.CFG, .INI) &mdash; ne gardez que les fichiers de donn&eacute;es. Consultez le <a href="https://wiki.scummvm.org/index.php?title=Datafiles">wiki ScummVM</a> pour les listes d&eacute;taill&eacute;es par jeu.</p>
+
+<p><strong>Exemples :</strong></p>
+<table>
+<tr><th>Jeu</th><th>Fichiers requis</th></tr>
+<tr><td>Jeux AGI (King's Quest 1...)</td><td>LOGDIR, PICDIR, VIEWDIR, SNDDIR, OBJECT, WORDS.TOK, VOL.*</td></tr>
+<tr><td>Jeux SCI (Quest for Glory...)</td><td>RESOURCE.MAP, RESOURCE.0*, VERSION, *.SCR, *.HEP, *.MSG</td></tr>
+<tr><td>Jeux SCUMM (Monkey Island...)</td><td>*.LFL ou MONKEY.000/MONKEY.001 (varie selon le jeu)</td></tr>
+<tr><td>Beneath a Steel Sky</td><td>SKY.DNR, SKY.DSK</td></tr>
+<tr><td>Flight of the Amazon Queen</td><td>QUEEN.1</td></tr>
+<tr><td>Lure of the Temptress</td><td>DISK1.VGA (ou similaire)</td></tr>
+</table>
+
+<h2>3. Contr&ocirc;les</h2>
+
+<h3>3.1 Touches par d&eacute;faut</h3>
+<table>
+<tr><th>Touche calculatrice</th><th>Action</th></tr>
+<tr><td><strong>Touchpad</strong></td><td>D&eacute;placer le curseur de la souris</td></tr>
+<tr><td><strong>Clic touchpad</strong></td><td>Clic gauche</td></tr>
+<tr><td><strong>Ctrl</strong></td><td>Clic gauche / Interagir</td></tr>
+<tr><td><strong>Shift</strong></td><td>Clic du milieu</td></tr>
+<tr><td><strong>Var</strong></td><td>Clic droit</td></tr>
+<tr><td><strong>Enter</strong></td><td>Entr&eacute;e / Valider</td></tr>
+<tr><td><strong>Espace</strong></td><td>Passer / Pause</td></tr>
+<tr><td><strong>Menu</strong></td><td>Menu du jeu (F5)</td></tr>
+<tr><td><strong>ON</strong></td><td>Quitter le jeu</td></tr>
+<tr><td><strong>ON + Esc</strong></td><td>Quitter de force (convention Ndless)</td></tr>
+<tr><td><strong>8 / 2 / 4 / 6</strong></td><td>D&eacute;placer le curseur Haut / Bas / Gauche / Droite</td></tr>
+<tr><td><strong>Touches fl&eacute;ch&eacute;es</strong></td><td>D&eacute;placer le curseur de la souris</td></tr>
+<tr><td><strong>A-Z, 0-9</strong></td><td>Saisie clavier (saisie de texte, analyseur AGI...)</td></tr>
+</table>
+
+<h3>3.2 Reconfigurer les touches</h3>
+<p>Vous pouvez r&eacute;affecter n'importe quelle action via le menu Options de ScummVM :</p>
+<ol>
+<li>Appuyez sur <strong>Menu</strong> (F5) pour ouvrir le menu du jeu</li>
+<li>Allez dans <strong>Options</strong> &rarr; <strong>Keymaps</strong></li>
+<li>Cliquez sur l'action que vous souhaitez reconfigurer</li>
+<li>Un clavier virtuel (VKB) appara&icirc;t &mdash; s&eacute;lectionnez la touche souhait&eacute;e</li>
+<li>Appuyez sur <strong>Enter</strong> ou <strong>5</strong> pour confirmer, <strong>Esc</strong> pour annuler</li>
+</ol>
+
+<h3>3.3 Clavier virtuel (VKB)</h3>
+<table>
+<tr><th>Touche</th><th>Action VKB</th></tr>
+<tr><td>Fl&eacute;ches / 2, 4, 6, 8</td><td>Naviguer entre les touches</td></tr>
+<tr><td>Enter / 5</td><td>Confirmer la s&eacute;lection</td></tr>
+<tr><td>Esc</td><td>Annuler l'affectation</td></tr>
+<tr><td>Touchpad</td><td>Toucher pour s&eacute;lectionner une touche</td></tr>
+</table>
+<p>Couleurs des touches : <span style="color:#f0c040;">Jaune</span> = curseur, <span style="color:#4090d0;">Bleu</span> = affectation actuelle, <span style="color:#803030;">Rouge fonc&eacute;</span> = utilis&eacute;e par une autre action (bloqu&eacute;e), <span style="color:#802020;">Rouge</span> = CLEAR (supprimer l'affectation).</p>
+
+<h2>4. Informations techniques</h2>
+
+<h3>4.1 Logiciel libre</h3>
+<table>
+<tr><th>Projet</th><th>D&eacute;tails</th></tr>
+<tr><td>ScummVM</td><td>Version 2026.1.1git &mdash; <a href="https://www.scummvm.org/">https://www.scummvm.org/</a></td></tr>
+<tr><td>Code source ScummVM</td><td><a href="https://github.com/scummvm/scummvm">https://github.com/scummvm/scummvm</a> (GPL-3.0)</td></tr>
+<tr><td>SDK Ndless</td><td><a href="https://ndless.me/">https://ndless.me/</a></td></tr>
+</table>
+
+<h3>4.2 Code source du portage</h3>
+<p>Le code source de ce portage TI-Nspire est disponible ici :</p>
+<p><a href="https://github.com/ztar-dubs/scummvm-ndless.git">https://github.com/ztar-dubs/scummvm-ndless.git</a></p>
+
+<h3>4.3 Mat&eacute;riel</h3>
+<ul>
+<li>&Eacute;cran : 320x240, RGB565 16 bits</li>
+<li>Processeur : ARM926EJ-S (ARMv5TEJ)</li>
+<li>Pas de sortie audio (le son est d&eacute;sactiv&eacute;)</li>
+<li>Touchpad pour le contr&ocirc;le de la souris (avec calibration dynamique)</li>
+</ul>
+
+<h3>4.4 Limitations</h3>
+<ul>
+<li>Pas de son (la TI-Nspire n'a pas de mat&eacute;riel audio)</li>
+<li>Les jeux SCUMM v7/v8 ne sont pas support&eacute;s (trop gourmands)</li>
+<li>Les jeux en haute r&eacute;solution (640x480) peuvent ne pas s'afficher correctement</li>
+<li>Espace de stockage limit&eacute; sur la calculatrice</li>
+</ul>
+
+<h2>5. Cr&eacute;dits</h2>
+<p>Ce portage a &eacute;t&eacute; rendu possible gr&acirc;ce &agrave; :</p>
+<ul>
+<li>L'&eacute;quipe <a href="https://www.scummvm.org/">ScummVM</a> pour cet incroyable &eacute;mulateur multi-moteurs</li>
+<li>L'&eacute;quipe <a href="https://ndless.me/">Ndless</a> pour avoir rendu le d&eacute;veloppement natif possible sur la TI-Nspire</li>
+<li>L'&eacute;mulateur <a href="https://github.com/nspire-emus/firebird">Firebird</a> pour les tests</li>
+</ul>
+
+</body>
+</html>
