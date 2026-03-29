@@ -75,6 +75,38 @@ NspireFilesystemNode::NspireFilesystemNode(const Common::String &p)
 		}
 	}
 
+	// Case-insensitive fallback: scan parent directory for a matching filename
+	Common::String parentPath = Common::normalizePath(p.c_str(), '/');
+	size_t lastSlash = parentPath.findLastOf('/');
+	if (lastSlash != Common::String::npos) {
+		Common::String dirPath = Common::String(parentPath.c_str(), lastSlash);
+		Common::String baseName = Common::String(parentPath.c_str() + lastSlash + 1);
+
+		DIR *dirp = opendir(dirPath.empty() ? "." : dirPath.c_str());
+		if (dirp) {
+			struct dirent *dp;
+			while ((dp = readdir(dirp)) != NULL) {
+				Common::String entryName(dp->d_name);
+				Common::String entryNameNoTns = stripTnsSuffix(entryName);
+
+				if (entryName.equalsIgnoreCase(baseName) ||
+				    entryNameNoTns.equalsIgnoreCase(baseName) ||
+				    entryName.equalsIgnoreCase(baseName + ".tns")) {
+					Common::String matchPath = dirPath + "/" + dp->d_name;
+					if (stat(matchPath.c_str(), &st) == 0) {
+						_path = matchPath;
+						_isValid = true;
+						_isDirectory = S_ISDIR(st.st_mode);
+						_displayName = stripTnsSuffix(Common::String(dp->d_name));
+						closedir(dirp);
+						return;
+					}
+				}
+			}
+			closedir(dirp);
+		}
+	}
+
 	// Path doesn't exist (yet) - it may be created later
 	_isValid = false;
 	_isDirectory = false;

@@ -398,6 +398,8 @@ Common::SeekableReadStream *ResourceManager::getVolumeFile(ResourceSource *sourc
 		return file;
 	}
 	// failed
+	warning("ResourceManager::getVolumeFile: failed to open '%s' (open volumes: %u)",
+	        source->getLocationName().toString().c_str(), (unsigned)_volumeFiles.size());
 	delete file;
 	return nullptr;
 }

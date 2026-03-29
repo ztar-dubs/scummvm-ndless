@@ -76,7 +76,7 @@ enum ResourceErrorCodes {
 };
 
 enum {
-	MAX_OPENED_VOLUMES = 5 ///< Max number of simultaneously opened volumes
+	MAX_OPENED_VOLUMES = 2 ///< Max number of simultaneously opened volumes (reduced for Nspire fd limits)
 };
 
 enum ResourceType {
